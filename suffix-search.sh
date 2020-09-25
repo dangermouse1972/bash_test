@@ -29,12 +29,15 @@ function searchForFiles
 {
     kount=0
 
-    cmd="find $search_path -type f -newer '$from_date' ! -newer '$to_date' -name ${filename//[,]/ -o -name } | wc -l"
+    cmd="find $search_path -type f ! -newermt '$to_date' -newermt '$from_date' \( -name ${filename//[,]/ -o -name } \)" # | wc -l"
+#    cmd="find $search_path -type f  ! -mmin -$to_date \! -mmin -$from_date -name ${filename//[,]/ -o -name } | wc -l"
+#     cmd="find $search_path  -newer $0.start \! -newer $0.stop -type f -name ${filename//[,]/ -o -name } | wc -l"   
     echo $cmd
 
     #eval $cmd
 
-    kount=`eval $cmd`
+    eval $cmd -ls # added for test purposes to see result
+    kount=`eval $cmd | wc -l`
     
     echo "total: "$kount
 
@@ -77,6 +80,10 @@ function validateArgs
     fi
     
     from_date=`date -d @$from_date +"%Y-%m-%d %T"`
+    #from_date=$(((`date +'%s'`-$from_date)/60))
+    #touch -t `date -d @$from_date +%Y%m%d%H%M` $0.start
+
+
 
     if [ $? -gt 0 ]
     then
@@ -94,6 +101,11 @@ function validateArgs
     fi
 
     to_date=`date -d @$to_date +"%Y-%m-%d %T"`
+    #to_date=$(((`date +'%s'`-$to_date)/60))
+
+    #touch -t `date -d @$to_date +%Y%m%d%H%M` $0.stop
+
+
 
     if [ $? -gt 0 ]
     then

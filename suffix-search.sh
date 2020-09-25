@@ -29,7 +29,7 @@ function searchForFiles
 {
     kount=0
 
-    cmd="find $search_path -type f -name ${filename//[,]/ -o -name } -newermt '$from_date' ! -newermt '$to_date' | wc -l"
+    cmd="find $search_path -type f -newer '$from_date' ! -newer '$to_date' -name ${filename//[,]/ -o -name } | wc -l"
     echo $cmd
 
     #eval $cmd

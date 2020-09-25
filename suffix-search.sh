@@ -1,10 +1,12 @@
 #/bin/bash/
 search_path=$1
 filename=$2
-start_date=$3
-end_date=$4
+from_date=$3
+to_date=$4
 echo $search_path
 echo $filename
+echo $from_date
+echo $to_date
 
 ##test git
 
@@ -19,13 +21,15 @@ function help
     echo "                   All wild cards permited"
     echo "      from_date:   Search from date (including date).  Date be suplied in unix time"
     echo "      to_date:     Search to date (include date specifed). Date to be suplied in unix time" 
+    echo ""
+    echo "PLEASE NOTE.  Datetime must be in unix time.  For exampple run <date -d 'Apr 1 2020 13:00' +'%s'> to get unix time"
 } 
 
 function searchForFiles
 {
     kount=0
 
-    cmd="find $search_path -type f -name ${filename//[,]/ -o -name } | wc -l"
+    cmd="find $search_path -type f -name ${filename//[,]/ -o -name } -newermt '$from_date' ! -newermt '$to_date' | wc -l"
     echo $cmd
 
     #eval $cmd
@@ -52,7 +56,10 @@ function validateArgs
     then
         help
         exit 1
-    elif [ ! -d $search_path ]
+    fi
+
+    # check path exist
+    if [ ! -d $search_path ]
     then
         echo "Search path $search_path does not exist."
         exit 1
@@ -61,6 +68,41 @@ function validateArgs
 
 
     fi
+
+    if [ -z "$from_date" ] 
+    then
+        #echo "from_date post check:"$from_date
+        from_date=0
+
+    fi
+    
+    from_date=`date -d @$from_date +"%Y-%m-%d %T"`
+
+    if [ $? -gt 0 ]
+    then
+        echo "from_date:Incorrect Date Format"
+        exit 1
+    fi
+
+    echo "$from_date"
+
+    if [ -z "$to_date" ]
+    then
+        #use current datetime stamp
+        to_date=`date +%s`
+        echo $to_date
+    fi
+
+    to_date=`date -d @$to_date +"%Y-%m-%d %T"`
+
+    if [ $? -gt 0 ]
+    then
+        echo "to_date:Incorrect Date Format"
+        exit 1
+    fi
+
+    echo "$to_date"
+
 
 
 

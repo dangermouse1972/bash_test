@@ -29,7 +29,7 @@ function searchForFiles
 {
     kount=0
 
-    cmd="find $search_path -type f ! -newermt '$to_date' -newermt '$from_date' \( -name ${filename//[,]/ -o -name } \)" # | wc -l"
+    cmd="find $search_path -type f ! -newermt '$to_date' -newermt '$from_date' \( -name '${filename//[,]/\' -o -name \'}' \) # | wc -l"
 #    cmd="find $search_path -type f  ! -mmin -$to_date \! -mmin -$from_date -name ${filename//[,]/ -o -name } | wc -l"
 #     cmd="find $search_path  -newer $0.start \! -newer $0.stop -type f -name ${filename//[,]/ -o -name } | wc -l"   
     echo $cmd
@@ -123,4 +123,5 @@ function validateArgs
 validateArgs
 
 searchForFiles
+
 

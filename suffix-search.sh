@@ -17,7 +17,7 @@
 set -f
 
 search_path=$1
-filename="$2"
+filename=$2
 from_date=$3
 to_date=$4
 
@@ -67,13 +67,14 @@ function validateArgs
     fi
     
     #format date to be used in search parameters
-    from_date=`date -d @$from_date +"%Y-%m-%d %T"`
+    from_date="`date -d @$from_date +'%Y-%m-%d %T'`"
  
     #if above cmd fails then date format incorrect.  report and exit.
     if [ $? -gt 0 ]
     then
         echo "from_date:Incorrect Date Format"
         exit 1
+ 
     fi
 
     # check to_date exists
@@ -86,7 +87,7 @@ function validateArgs
     fi
 
     # format date for search parameters
-    to_date=`date -d @$to_date +"%Y-%m-%d %T"`
+    to_date="`date -d @$to_date +'%Y-%m-%d %T'`"
 
 
     # if above cmd is incorrect then report and exit
